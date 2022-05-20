@@ -5,46 +5,101 @@
 
 <mapper namespace="com.daru.boot3.board.BoardMapper">
 
-	<insert id="setFileAdd" parameterType="BoardFilesVO">
-		INSERT INTO boardfiles (filenum, num, filename, oriname)
-		VALUES (null, #{num}, #{filename}, #{oriname})
-	</insert>
-
-	<select id="getDetail" parameterType="BoardVO" resultType="BoardVO">
-		SELECT * FROM board WHERE NUM=#{num}
-	</select>
-
-	<select id="getList" resultType="BoardVO" parameterType="Pager">
-		SELECT * FROM board WHERE num > 0 and
-		<choose>
-			<when test= "kind == 'col1'">
-				TITLE
-			</when>
-			<when test="kind=='col2'">
-				CONTENTS
-			</when>
-			<otherwise>
-				WRITER
-			</otherwise>
-		</choose>
-		LIKE concat('%', #{search}, '%')
-		
-		ORDER BY NUM DESC LIMIT #{startRow}, #{perPage}
-		
-	</select>
-	
-	<insert id="setAdd" parameterType="BoardVO">
-		INSERT INTO board (num, title, writer, contents, hit, regDate, ref, step, depth, category)
-		VALUES (null, #{title}, #{writer}, #{contents}, 0, now(), 0, 0, 0, 1)
-	</insert>
-	
-	<update id="setUpdate" parameterType="BoardVO">
-		UPDATE board SET TITLE=#{title}, contents=#{contents}
+<select id="getFileDetail" parameterType="BoardFilesVO" resultType="BoardFilesVO">
+ 		SELECT * FROM BOARDFILES WHERE FILENUM = #{fileNum}
+ 	</select>
+ 
+ 	<select id="getFileList" parameterType="BoardVO" resultType="BoardFilesVO">
+ 		SELECT * FROM BOARDFILES WHERE NUM=#{num}
+ 	</select>
+ 
+ 
+ 	<insert id="setFileAdd" parameterType="BoardFilesVO">
+ 		INSERT INTO BOARDFILES (FILENUM, NUM, FILENAME, ORINAME)
+ 		VALUES (NULL, #{num}, #{fileName}, #{oriName})
+ 	</insert>
+ 	
+ 	
+ 	<select id="getDetail" parameterType="BoardVO" resultMap="getDetailResult">
+ 		SELECT B.*, F.*
+		FROM BOARD B
+			 LEFT JOIN 			 
+			 BOARDFILES F			 
+			 USING(NUM)			 
 		WHERE NUM=#{num}
-	</update>
-	
-	<delete id="setDelete" parameterType="BoardVO">
-		DELETE FROM board WHERE NUM =#{num}
-	</delete>
+ 	</select>
+ 	
+ 	<resultMap type="BoardVO" id="getDetailResult">
+ 		<id column="num" property="num"/>
+ 		<result column="title" property="title"/>
+ 		<result column="writer" property="writer"/>
+ 		<result column="contents" property="contents"/>
+ 		<result column="hit" property="hit"/>
+ 		<result column="regDate" property="regDate"/>
+ 		<result column="ref" property="ref"/>
+ 		<result column="step" property="step"/>
+ 		<result column="depth" property="depth"/>
+ 		<result column="category" property="category"/>
+ 		<collection property="filesVOs" javaType="java.util.List" ofType="BoardFilesVO">
+ 			<id column="fileNum" property="fileNum"/>
+ 			<result column="fileName" property="fileName"/>
+ 			<result column="oriName" property="oriName"/>	
+ 		</collection>
+ 		
+ 	
+ 	</resultMap>
+ 	
+ 	
+ 	<select id="getTotalCount" resultType="java.lang.Long" parameterType="Pager">
+ 		SELECT COUNT(NUM) FROM BOARD
+ 		WHERE
+ 		<choose>
+ 			<when test="kind == 'col1'">
+ 				TITLE
+ 			</when>
+ 			<when test="kind == 'col2'">
+ 				CONTENTS
+ 			</when>
+ 			<otherwise>
+ 				WRITER
+ 			</otherwise>
+ 		</choose>
+ 		LIKE concat('%', #{search},'%')
+ 	</select>
+ 	
+ 	<select id="getList" resultType="BoardVO" parameterType="Pager">
+ 		SELECT * FROM BOARD
+ 		WHERE NUM > 0 and 
+ 		
+ 		<choose>
+ 			<when test="kind == 'col1'">
+ 				TITLE
+ 			</when>
+ 			<when test="kind == 'col2'">
+ 				CONTENTS
+ 			</when>
+ 			<otherwise>
+ 				WRITER
+ 			</otherwise>
+ 		</choose>
+ 		LIKE concat('%', #{search},'%')
+ 		 
+ 		ORDER BY NUM DESC 
+ 		LIMIT #{startRow}, #{perPage}
+ 	</select>
+ 	
+ 	<insert id="setAdd" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="num">
+ 		INSERT INTO BOARD (NUM, TITLE, WRITER, CONTENTS, HIT, REGDATE, 'REF', STEP, 'DEPTH', CATEGORY)
+		VALUES(#{num}, #{title}, #{writer}, #{contents}, 0, now(), 0, 0, 0,1);
+ 	</insert>
+ 	
+ 	<update id="setUpdate" parameterType="BoardVO">
+ 		UPDATE BOARD SET TITLE=#{title}, CONTENTS=#{contents} WHERE NUM=#{num}
+ 	</update>
+ 	
+ 	<delete id="setDelete" parameterType="BoardVO">
+ 		DELETE FROM BOARD WHERE NUM=#{num}
+ 	</delete>
+ 
 
 </mapper>

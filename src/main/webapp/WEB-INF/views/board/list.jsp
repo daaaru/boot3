@@ -6,8 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<c:import url="../temp/header_css.jsp"></c:import>
 <title>Insert title here</title>
 </head>
 <body>
@@ -26,7 +25,7 @@
 			<thead>
 				<tr>
 					<th>Num</th>
-					<th>Titel</th>
+					<th>Title</th>
 					<th>Writer</th>
 					<th>Hit</th>
 					<th>Date</th>
@@ -36,7 +35,7 @@
 			<c:forEach items="${list}" var="vo">
 				<tr>
 					<td>${vo.num}</td>
-					<td>${vo.title}</td>
+					<td><a class="link-success text-decoration-none" href="./detail?num=${vo.num}">${vo.title}</a></td>
 					<td>${vo.writer}</td>
 					<td>${vo.hit}</td>
 					<td>${vo.regDate}</td>
@@ -45,9 +44,11 @@
 			</tbody>
 			
 		</table>
-		<div class="row">
+	</div>
+	
+	<div class="row">
 		<nav aria-label="Page navigation example">
-		  <ul class="pagination align-self-center">
+		  <ul class="pagination">
 		    <li class="page-item">
 		      <a class="page-link" href="./list?pn=${pager.pre?pager.startNum-1:1}&kind=${pager.kind}&search=${pager.search}" aria-label="Previous">
 		        <span aria-hidden="true">&laquo;</span>
@@ -67,8 +68,10 @@
 		</nav>
 	
 	</div>
-		
-		<div class="row justify-content-between">
+	
+	
+	
+	<div class="row justify-content-between">
 		<div class="col-5">
 			<form class="d-flex" action="./list" method="get">
 				<div class="col-4 me-2">
@@ -86,12 +89,9 @@
 	        	</div>
 	      </form>
 		</div>
-
-		
-	</div>
-	
-	<div class="row justify-content-end">
-		<a href="./add" type="button" class="col-1 btn btn-outline-primary">WRITE</a>
+		<div class="col-1">
+			<a href="./add" type="button" class="btn btn-outline-primary">WRITE</a>
+		</div>
 	</div>
 
 </div>

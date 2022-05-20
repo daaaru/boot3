@@ -18,8 +18,8 @@ class BoardMapperTest {
 	//@Test
 	void setFileAddTest() throws Exception{
 		BoardFilesVO boardFilesVO = new BoardFilesVO();
-		boardFilesVO.setFilename("filename");
-		boardFilesVO.setOriname("oriname");
+//		boardFilesVO.setFilename("filename");
+//		boardFilesVO.setOriname("oriname");
 		boardFilesVO.setNum(3L);
 		int result = boardMapper.setFileAdd(boardFilesVO);
 		assertEquals(1, result);
